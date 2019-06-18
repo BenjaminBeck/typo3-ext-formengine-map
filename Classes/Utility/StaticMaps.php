@@ -59,6 +59,6 @@ class StaticMaps
      */
     protected static function getObjectManager()
     {
-        return GeneralUtility::makeInstance(ObjectManager::class);
+        return \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ObjectManager::class);
     }
 }
