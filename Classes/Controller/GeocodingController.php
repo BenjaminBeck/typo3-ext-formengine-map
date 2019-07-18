@@ -2,26 +2,30 @@
 
 namespace CedricZiel\FormEngine\Map\Controller;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Http\AjaxRequestHandler;
+use TYPO3\CMS\Core\Http\Response;
 use TYPO3\CMS\Core\Http\ServerRequest;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
 use TYPO3\CMS\Extensionmanager\Utility\ConfigurationUtility;
+use TYPO3\CMS\Core\Http\JsonResponse;
 
 class GeocodingController
 {
     const API_URL = 'https://maps.googleapis.com/maps/api/geocode/json?';
 
     /**
-     * @param array              $ajaxParameters
+     * @param mixed              $ajaxParameters
      * @param AjaxRequestHandler $ajaxRequestHandler
      */
-    public function geocode(array $ajaxParameters, AjaxRequestHandler $ajaxRequestHandler)
+    public function geocode( $ajaxParameters, Response $Response)
     {
-        /** @var ServerRequest $request */
-        $request = $ajaxParameters['request'];
-        $address = $request->getQueryParams()['query'];
+//        /** @var ServerRequest $request */
+//        $request = $ajaxParameters['request'];
+		$address = $_GET["query"];
+        # $address = $request->getQueryParams()['query'];
         $queryData = http_build_query(
             [
                 'key'     => $this->getApiKey(),
@@ -29,14 +33,12 @@ class GeocodingController
                 'language' => $this->getApiLanguage(), 
             ]
         );
-
         $report = [];
         $url = static::API_URL.$queryData;
-
         $result = GeneralUtility::getUrl($url, 0, false, $report);
-
-        $ajaxRequestHandler->setContentFormat('application/json');
-        $ajaxRequestHandler->setContent(['data' => $result]);
+		return (new JsonResponse())->setPayload((array)json_decode($result));
+		// $ajaxRequestHandler->setContentFormat('application/json');
+		// $ajaxRequestHandler->setContent(['data' => $result]);
     }
 
     /**
@@ -46,10 +48,17 @@ class GeocodingController
      */
     protected function getApiKey()
     {
-        /** @var ConfigurationUtility $configurationUtility */
-        $configurationUtility = $this->getObjectManager()->get(ConfigurationUtility::class);
-        $extensionConfiguration = $configurationUtility->getCurrentConfiguration('formengine_map');
-        return $extensionConfiguration['googleMapsGeocodingApiKey']['value'];
+		$backendConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ExtensionConfiguration::class)
+			->get('formengine_map');
+//		\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($backendConfiguration, __FILE__.':L'.__LINE__);
+//        /** @var ConfigurationUtility $configurationUtility */
+//        $configurationUtility = static::getObjectManager()->get(ConfigurationUtility::class);
+//        $extensionConfiguration = $configurationUtility->getCurrentConfiguration('formengine_map');
+		return $backendConfiguration['googleMapsGeocodingApiKey'];
+//        /** @var ConfigurationUtility $configurationUtility */
+//        $configurationUtility = $this->getObjectManager()->get(ConfigurationUtility::class);
+//        $extensionConfiguration = $configurationUtility->getCurrentConfiguration('formengine_map');
+//        return $extensionConfiguration['googleMapsGeocodingApiKey']['value'];
     }
 
     /**

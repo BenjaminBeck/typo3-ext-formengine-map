@@ -2,6 +2,7 @@
 
 namespace CedricZiel\FormEngine\Map\Utility;
 
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
 use TYPO3\CMS\Extbase\Object\ObjectManagerInterface;
@@ -47,11 +48,16 @@ class StaticMaps
      */
     public static function getApiKey()
     {
-        /** @var ConfigurationUtility $configurationUtility */
-        $configurationUtility = static::getObjectManager()->get(ConfigurationUtility::class);
-        $extensionConfiguration = $configurationUtility->getCurrentConfiguration('formengine_map');
 
-        return $extensionConfiguration['googleMapsGeocodingApiKey']['value'];
+		$backendConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ExtensionConfiguration::class)
+			->get('formengine_map');
+//		\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($backendConfiguration, __FILE__.':L'.__LINE__);
+
+//        /** @var ConfigurationUtility $configurationUtility */
+//        $configurationUtility = static::getObjectManager()->get(ConfigurationUtility::class);
+//        $extensionConfiguration = $configurationUtility->getCurrentConfiguration('formengine_map');
+//
+        return $backendConfiguration['googleMapsGeocodingApiKey'];
     }
 
     /**

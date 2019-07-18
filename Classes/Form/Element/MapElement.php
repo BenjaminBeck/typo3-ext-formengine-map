@@ -5,6 +5,7 @@ namespace CedricZiel\FormEngine\Map\Form\Element;
 use CedricZiel\FormEngine\Map\Utility\StaticMaps;
 use TYPO3\CMS\Backend\Form\Element\InputTextElement;
 use TYPO3\CMS\Backend\Form\NodeFactory;
+use TYPO3\CMS\Core\Configuration\ExtensionConfiguration;
 use TYPO3\CMS\Core\Utility\GeneralUtility;
 use TYPO3\CMS\Core\Utility\MathUtility;
 use TYPO3\CMS\Extbase\Object\ObjectManager;
@@ -95,11 +96,16 @@ class MapElement extends InputTextElement
      */
     protected function getMode()
     {
-        /** @var ConfigurationUtility $configurationUtility */
-        $configurationUtility = static::getObjectManager()->get(ConfigurationUtility::class);
-        $extensionConfiguration = $configurationUtility->getCurrentConfiguration('formengine_map');
+		$backendConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ExtensionConfiguration::class)
+			->get('formengine_map');
 
-        return $extensionConfiguration['mode']['value'];
+//		\TYPO3\CMS\Extbase\Utility\DebuggerUtility::var_dump($backendConfiguration, __FILE__.':L'.__LINE__);
+
+//        /** @var ConfigurationUtility $configurationUtility */
+//        $configurationUtility = static::getObjectManager()->get(ConfigurationUtility::class);
+//        $extensionConfiguration = $configurationUtility->getCurrentConfiguration('formengine_map');
+//
+        return $backendConfiguration['mode'];
     }
 
     /**
