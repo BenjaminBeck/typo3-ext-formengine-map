@@ -68,10 +68,9 @@ class GeocodingController
      */
     protected function getApiLanguage()
     {
-        /** @var ConfigurationUtility $configurationUtility */
-        $configurationUtility = $this->getObjectManager()->get(ConfigurationUtility::class);
-        $extensionConfiguration = $configurationUtility->getCurrentConfiguration('formengine_map');
-        return $extensionConfiguration['googleMapsGeocodingApiLanguage']['value'];
+		$backendConfiguration = \TYPO3\CMS\Core\Utility\GeneralUtility::makeInstance(ExtensionConfiguration::class)
+			->get('formengine_map');
+		return $backendConfiguration['googleMapsGeocodingApiLanguage'];
     }
 
     /**

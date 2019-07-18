@@ -12,7 +12,7 @@
 		}
 	],
 	"require": {
-		"typo3/cms": "^7.6 || ^8.5"
+		"typo3/cms": "^9.5"
 	},
 	"autoload": {
 		"psr-4": {
